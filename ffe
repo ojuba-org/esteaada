@@ -1,0 +1,65 @@
+#! /bin/bash
+# File Footer Extractor 0.1
+# Under Waqf License 
+# By Mosaab Alzoubi (moceap@hotmail.com - facebook.com/moceap)
+# Almasa Project
+# 1434-3-30
+#---------------------------------------------------------------
+arg="$@"
+first="$1"
+ftmp="$HOME/.ftmp"
+if [ -e "$ftmp" ]
+	then rm -rf "$ftmp"
+fi
+mkdir "$ftmp"
+if [ "$first" = "0" ]
+	then exit
+fi
+n=0
+error()
+{
+echo "Enter one of (2,4) and space before file name to calculate.
+File Footer Extractor 0.1 
+By :
+Almasa Project
+Mosaab Hosni Alzoubi
+moceap@hotmail.com - facebook.com/moceap"
+exit
+}
+if [ "$arg" = "" ]
+then error
+fi
+for i in $(hexdump -C "$(echo "$arg" | sed "s:$first ::g")" | tail -n 3)
+	do
+		if [ "$(echo $i | cut -c 3)" = "" ]	
+			then echo $i
+		fi
+	done | tail -n 4 | while read line
+	do
+		let "n= $n + 1"
+		if [ $n = 1 ]
+			then echo $line > "$ftmp/71"
+		elif [ $n = 2 ]
+			then echo $line > "$ftmp/72"
+		elif [ $n = 3 ]
+			then echo $line > "$ftmp/73"
+		elif [ $n = 4 ]
+			then echo $line > "$ftmp/74"
+		fi
+	done
+s0='\x'
+s1=$(cat "$ftmp/71")
+s2=$(cat "$ftmp/72")
+s3=$(cat "$ftmp/73")
+s4=$(cat "$ftmp/74")
+end2="$s0$s3$s0$s4"
+end4="$s0$s1$s0$s2$s0$s3$s0$s4"
+if [ "$first" = "2" ]
+	then echo $end2
+elif [ "$first" = "4" ]
+	then echo $end4
+else error
+fi
+if [ -e "$ftmp" ]
+	then rm -rf "$ftmp"
+fi

@@ -1,0 +1,70 @@
+AlmasaLanguageSystem_Name=English
+T_lang_select="Select Language"
+Ttitle="Esteaada $es_ver"
+T_welcome="
+بسم الله الرحمن الرحيم
+
+Thank Allah to help me to write this program .
+
+Esteaada "$es_ver" created to help in deleted file 
+recovery (normal delete or after format) If they 
+are'nt over written , very easily  
+
+-=-=-=-=-=-=-=-"
+Tabout="The $Ttitle program published under
+WAQFv2 license terms
+
+First Release 1434-4-10
+Second Release 1438-4-29
+
+By
+
+Almasa Project
+Mosaab Hosni Alzoubi
+
+To contact :
+
+moceap@hotmail.com
+facebook.com/moceap
+
+-=-=-=-=-=-=-=-"
+Hwelcome="Welcome"
+Hoptions="Options"
+T_exit="Exit"
+Tlang_select="Change language"
+Tlang_restart="Language changes if the program restarted."
+Habout="About"
+Hgeneral="General recovery"
+Hspecific="Specific recovery"
+Htext="Text recovery"
+Hadd="Add extension"
+Hhint="Hint of add"
+Tgeneral="At general recovery Esteaada program tris to recover files from choosen partition at all file extensions support."
+Tspecific="At specific recovery Esteaada program tris to recover files from choosen partition at specific file extensions support or added."
+Ttext="At text recovery Esteaada program tris to recover files from choosen partition , These are text files which started and finished with custom word."
+Tadd="Esteaada is detecting files to recover by their headers , Headers are characters which form start of the files . Every file type has its special header.
+To add a new file extension you need to know its header like : %PDF- for pdf files and mpg for mpg files . But not every file types have a right words then detecting files done by hexadecimal reading . Esteaada has three ways to read headers by hexadecimal reading . First it's reading 2 verse at multi divisions file types like jpg and exe , Second reading 4 verse at less divisions file types like java , Third reading 8 verse with non divisions file types like asf.
+Esteaada read headers automaticlly by sample entery .
+Also footer but don't add footer except when it non-variable for the file type . 
+New extensions has effect when program restarted ."
+Troot="You need root permissions to stara recovery operation"
+Tdisk="Select source disk :"
+Tdir="Select target folder :"
+Tgive="Give permissions for all users at recovered files"
+Trecovered="Recovered_files"
+Tstart=" Start recovery "
+TTtext="Enter the word that form the start of text files you want to recover :"
+TEtext="Enter the word that form the end of text files you want to recover :"
+Ttype="Enter new extension"
+Tsize="Enter max size in KB"
+Theader="Enter header and footer manually"
+Tverse="Select number of verse to read"
+Tsample="The sample"
+Terror="Error : enter all required fields"
+Tdone="Addition done ."
+T_error_message="Error : Enter all required data."
+TTheader="The header :"
+TTfooter="The footer :"
+TEdel="Delete all file extension added"
+Tspecs="Enter wanted types :"
+Tclear="Clear"

@@ -1,0 +1,24 @@
+[Desktop Entry]
+Categories=Utility;System;
+Comment[en_US]=Powerful file recovery
+Comment=Powerful file recovery
+Comment[ar]=مستعيد قوي للملفات
+Exec=esteaada
+Icon=esteaada
+GenericName[en_US]=Esteaada
+GenericName=استعادة
+GenericName[ar]=استعادة
+MimeType=
+Name[en_US]=Esteaada
+Name=استعادة
+Name[ar]=استعادة
+Path=
+StartupNotify=false
+Terminal=false
+TerminalOptions=
+Type=Application
+X-AppInstall-Package=Esteaada
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

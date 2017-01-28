@@ -1,0 +1,65 @@
+#! /bin/bash
+# File Header Extractor 0.1
+# Under Waqf License 
+# By Mosaab Alzoubi (moceap@hotmail.com - facebook.com/moceap)
+# Almasa Project
+# 1434-3-23
+#---------------------------------------------------------------
+arg="$@"
+first="$1"
+htmp="$HOME/.htmp"
+if [ -e "$htmp" ]
+	then rm -rf "$htmp"
+fi
+mkdir "$htmp"
+n=0
+error()
+{
+echo "Enter one of (2,4,8) and space before file name to calculate.
+File Header Extractor 0.1 
+By :
+Almasa Project
+Mosaab Hosni Alzoubi
+moceap@hotmail.com - facebook.com/moceap"
+exit
+}
+if [ "$arg" = "" ]
+then error
+fi
+hexdump -C -n 8 "$(echo "$arg" | sed "s:$first ::g")" | while read line
+do
+	let "n= $n + 1"
+	if [ $n = 1 ]
+		then echo "$line" | cut -c 11,12 > "$htmp/71"
+		echo "$line" | cut -c 14,15 > "$htmp/72"
+		echo "$line" | cut -c 17,18 > "$htmp/73"
+		echo "$line" | cut -c 20,21 > "$htmp/74"
+		echo "$line" | cut -c 23,24 > "$htmp/75"
+		echo "$line" | cut -c 26,27 > "$htmp/76"
+		echo "$line" | cut -c 29,30 > "$htmp/77"
+		echo "$line" | cut -c 32,33 > "$htmp/78"
+	fi
+done
+s0='\x'
+s1=$(cat "$htmp/71")
+s2=$(cat "$htmp/72")
+s3=$(cat "$htmp/73")
+s4=$(cat "$htmp/74")
+s5=$(cat "$htmp/75")
+s6=$(cat "$htmp/76")
+s7=$(cat "$htmp/77")
+s8=$(cat "$htmp/78")
+start2="$s0$s1$s0$s2"
+start4="$s0$s1$s0$s2$s0$s3$s0$s4"
+start8="$s0$s1$s0$s2$s0$s3$s0$s4$s0$s5$s0$s6$s0$s7$s0$s8"
+if [ "$first" = "2" ]
+	then echo $start2
+elif [ "$first" = "4" ]
+	then echo $start4
+elif [ "$first" = "8" ]
+	then echo $start8
+else error
+fi
+if [ -e $htmp ]
+	then rm -rf $htmp
+fi

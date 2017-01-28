@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+  <id type="desktop">esteaada.desktop</id>
+  <licence>WAQF</licence>
+  <summary>Powerful file recovery</summary>
+  <summary xml:lang="ar">مستعيد قوي للملفات</summary>
+  <description>
+    <p>Powerful file recovery.</p>
+    <p xml:lang="ar">مستعيد قوي للملفات.</p>
+  </description>
+  <url type="homepage">http://linuxac.org</url>
+  <screenshots>
+    <screenshot type="default">http://ojuba.org/screenshots/esteaada.png</screenshot>
+  </screenshots>
+  <updatecontact>moceap@hotmail.com</updatecontact>
+  <project_group>Utility</project_group>
+</application>

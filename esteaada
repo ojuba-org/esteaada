@@ -1,0 +1,693 @@
+#! /bin/bash
+# Esteaada 2.0
+# Under WAQFv2 License 
+# By Mosaab Alzoubi (moceap@hotmail.com - facebook.com/moceap)
+# Almasa Project
+# 1434-4-10
+# Last update 1438-4-29
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#---Pre-program---
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+es_arg="$@"
+es_ver="2.0"
+es_maindir="$HOME/.esteaada"
+es_icon=/usr/share/pixmaps/esteaada.png
+if ( ! [ -e "$es_maindir" ] )
+	then
+		mkdir "$es_maindir"
+fi
+if ( ! [ -e "$es_maindir/language" ] )
+	then
+		touch "$es_maindir/language"
+fi
+if ( [ -e /usr/almasa/reqs/gtkdialog ] )
+	then
+		es_gtkdialog=/usr/almasa/reqs/gtkdialog
+	else
+		es_gtkdialog=gtkdialog
+fi
+echo '#! /bin/bash
+# Esteaada '$es_ver'
+# Under WAQFv2 License 
+# By Mosaab Alzoubi (moceap@hotmail.com - facebook.com/moceap)
+# Almasa Project
+# 1438-4-29
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+echo " 
+ = =           ||       = =             ||
+======     ||  || \==/                  ||
+||  ||     ||  ||  ||    ||   || || ||  ||
+======  ====|  ||=====================  ||
+
+Esteaada Recovery System '$es_ver' 
+Almasa project (c) WAQFv2 license.
+
+<<< You need ROOT access to continue >>>
+
+Wait for automatic close >>>>>>
+"
+sleep 3' > "$es_maindir/first"
+chmod +x "$es_maindir/first"
+touch "$es_maindir/textconf"
+echo '#! /bin/bash
+echo "txt y 2000000 $1" > "'$es_maindir'/textconf"' > "$es_maindir/pretextconf"
+chmod +x "$es_maindir/pretextconf"
+errorcommand='"'$es_gtkdialog' --file='"$es_maindir"'/error_temp > /dev/null"'
+donecommand='"'$es_gtkdialog' --file='"$es_maindir"'/done_temp > /dev/null"'
+echo '#! /bin/bash
+error()
+{
+"'$errorcommand'"
+exit
+}
+nstate="$1"
+ntype="$2"
+nsize="$3"
+nhead=$(echo "$4" | sed "s: ::g")
+nhverse="$5"
+nfoot=$(echo "$6" | sed "s: ::g")
+nfverse="$7"
+nsample="$8"
+if [ "$ntype" = "esteaadanone" ]
+	then error
+fi
+if [ "$nsize" = "esteaadanone" ]
+	then error
+fi
+if [ "$nstate" = true ]
+	then
+		if [ "$nhead" = "esteaadanone" ]
+			then error
+			else lhead="$nhead"
+		fi
+		if [ "$nfoot" = "esteaadanone" ]
+			then lfoot=""
+			else lfoot="$nfoot"
+		fi
+elif [ "$nstate" = false ]
+	then
+		if [ "$nhverse" = "esteaadanone" ]
+			then error
+		fi
+		if [ "$nfverse" = "esteaadanone" ]
+			then error
+		fi
+		if [ "$nsample" = "esteaadanone" ]
+			then error
+		fi
+		lhead="$(fhe "$nhverse" "$nsample")"
+		lfoot="$(ffe "$nfverse" "$nsample")"
+fi
+echo "$ntype y "$nsize"000 $lhead $lfoot" >> "'$es_maindir'/NewTypes"
+"'$donecommand'"' > "$es_maindir/newtype"
+chmod +x "$es_maindir/newtype"
+if [ -e "$es_maindir"/specs_tmp ]
+	then
+		rm "$es_maindir"/specs_tmp
+		touch "$es_maindir"/specs_tmp
+	else
+		touch "$es_maindir"/specs_tmp
+fi
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#---arg-options---
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+if [ "$es_arg" = "--version" ]
+	then
+		echo "$es_ver"
+		exit
+fi
+if [ "$es_arg" = "--help" ]
+	then
+		echo "Esteaada "$es_ver" File Recovery Program
+only by one click
+
+--help for help
+--language for change Esteaada language
+--version for show version of Esteaada"
+		exit
+fi
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#---Language-Select---
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+lang_dir="/usr/share/esteaada/languages"
+sys_lang=$(echo $LANG | cut -c 1,2)
+detect_language()
+{
+if [ "$T_lang_select" = "" ]
+	then T_lang_select="اختر اللغة -- Select Language"
+fi
+lang_list="$(ls "$lang_dir")"
+mkdir "$es_maindir/langtmp"
+lnames()
+{
+for lang in $lang_list
+do
+langname=$(cat $lang_dir/$lang | grep AlmasaLanguageSystem_Name | sed s/AlmasaLanguageSystem_Name=//g)
+touch "$es_maindir/langtmp/$langname"
+echo $lang > "$es_maindir/langtmp/$langname"
+echo '				<item>'"$langname"'</item>'
+done
+}
+touch "$es_maindir"/language_temp
+echo '
+<window title="'$T_lang_select'" image-name="'$es_icon'" window_position="1">
+	<vbox>
+		<frame "'$T_lang_select'">
+			<comboboxtext>
+				<variable>langselected</variable>
+'"$(lnames)"'
+			</comboboxtext>
+		</frame>
+		<hbox>
+			<button ok>
+				<action>cat '"$es_maindir/langtmp/"'$langselected > '"$es_maindir/language"'</action>
+				<action>exit:Quit</action>
+			</button>
+			<button cancel></button>
+		</hbox>
+	</vbox>
+</window>
+' > "$es_maindir"/language_temp
+"$es_gtkdialog" --file="$es_maindir"/language_temp > /dev/null
+rm "$es_maindir"/language_temp
+rm -rf "$es_maindir/langtmp"
+es_language=$(cat "$es_maindir/language")
+}
+es_language=$(cat "$es_maindir/language")
+if [ "$es_language" = "" ]
+	then
+		es_language=$sys_lang
+		if [ "$es_language" = "" ] 
+			then
+				detect_language
+		fi
+fi
+if [ "$es_arg" = "--language" ]
+	then
+		detect_language
+		exit
+fi
+if [ ! -e "$lang_dir/$es_language" ]
+	then detect_language
+fi
+source "$lang_dir/$es_language"
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#---Main-Program---
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+detect_disks()
+{
+udisks --enumerate | while read disk
+	do
+		vdisk=`echo "$disk" | sed "s:org/freedesktop/UDisks/devices:dev:g"`
+		echo "				<item>$vdisk</item>"
+	done
+}
+cutfirst()
+{
+echo $1
+}
+detect_types()
+{
+tardir="/usr/share/esteaada/types"
+foremost_types="$(cat "$tardir"/foremost)"
+db_files="$(ls $tardir | grep esteaada)"
+echo "$foremost_types" > "$es_maindir"/nowtypes
+for db in $db_files
+	do
+		cat $tardir/$db | while read line
+		do
+			cutfirst $line >> "$es_maindir"/nowtypes
+		done
+		cat $tardir/$db >> "$es_maindir"/new_core
+	done
+if [ -e "$es_maindir"/NewTypes ] ; then
+cat "$es_maindir"/NewTypes >> "$es_maindir"/new_core
+cat "$es_maindir"/NewTypes | while read line
+	do
+		cutfirst $line >> "$es_maindir"/nowtypes
+	done
+fi
+cat "$es_maindir"/new_core | while read line
+		do
+		cutfirst $line >> "$es_maindir"/cores
+		done
+coretypes="$(cat "$es_maindir"/cores)"
+}
+detect_types
+type_list()
+{
+lstype="$(cat "$es_maindir"/nowtypes)"
+for ty in $lstype
+	do
+		echo "				<item>$ty</item>"
+	done
+}
+echo '#! /bin/bash
+arg="$@"
+if [ "$arg" = "" ] ; then exit ; fi
+cutfirst()
+{
+echo $1
+}
+if [ -e "'$es_maindir'"/last_config ]
+	then rm "'$es_maindir'"/last_config
+fi
+if [ -e "'$es_maindir'"/tempspec ]
+	then rm "'$es_maindir'"/tempspec
+fi
+if [ -e "'$es_maindir'"/foretmps ]
+	then
+		rm "'$es_maindir'"/foretmps
+		touch "'$es_maindir'"/foretmps
+	else
+		touch "'$es_maindir'"/foretmps
+fi
+for ext in $arg
+	do
+		if [ ! "$(echo "'$foremost_types'" | grep $ext)" = "" ]
+			then
+				if [ ! "$(cat "'$es_maindir'"/foretmps)" = "" ]
+					then
+						echo "$(cat "'$es_maindir'"/foretmps) $ext" > "'$es_maindir'"/foretmps
+					else
+						echo "$ext" > "'$es_maindir'"/foretmps
+				fi
+		fi
+		echo "'$coretypes'" | grep $ext >> "'$es_maindir'"/tempspec
+	done
+wh_st()
+{
+cat "'$es_maindir'"/new_core | while read stype
+	do
+		fff="`cutfirst $stype`"
+		if [ "c$1" = "c$fff" ]
+			then echo "$stype" >> "'$es_maindir'"/last_config
+		fi
+	done
+}
+coretypess()
+{
+for iext in $arg
+	do
+		wh_st $iext
+	done
+}
+if [ ! "$(cat "'$es_maindir'"/tempspec)" = "" ]
+	then
+		coretypess
+		lsext="$(cat "'$es_maindir'"/foretmps | sed "s: :,:g")"
+		if [ ! "$lsext" = "" ]
+			then ttt="-t"
+		fi
+		echo "-c "'$es_maindir'"/last_config $ttt $lsext"
+	else
+		lsext="$(cat "'$es_maindir'"/foretmps | sed "s: :,:g")"
+		echo "-t $lsext"
+fi
+' > "$es_maindir/specific_tmp"
+chmod +x "$es_maindir/specific_tmp"
+echo '<window title="'$Ttitle'" image-name="'$es_icon'" window_position="1">
+	<vbox>
+		<text use-markup="true">
+			<label>"<span><b>'"$T_error_message"'</b></span>"</label>
+		</text>
+		<hbox>
+			<button>
+				<input file stock="gtk-ok"></input>
+			</button>
+		</hbox>
+	</vbox>
+</window>' > "$es_maindir"/error_temp
+echo '<window title="'$Ttitle'" image-name="'$es_icon'" window_position="1">
+	<vbox>
+		<text use-markup="true">
+			<label>"<span><b>'"$Tdone"'</b></span>"</label>
+		</text>
+		<hbox>
+			<button>
+				<input file stock="gtk-ok"></input>
+			</button>
+		</hbox>
+	</vbox>
+</window>' > "$es_maindir"/done_temp
+echo '<window title="'$Ttitle'" image-name="'$es_icon'" window_position="1">
+	<vbox>
+		<notebook tab-labels="'$Hwelcome'|'$Hgeneral'|'$Hspecific'|'$Htext'|'$Hadd'|'$Hhint'|'$Hoptions'|'$Habout'"  tab-pos="0">
+			<vbox>
+				<text use-markup="true">
+					<label>"<span><b>'"$T_welcome"'</b></span>"</label>
+				</text>
+			</vbox>
+			<vbox>
+				<frame '$Hgeneral'>
+				<text use-markup="true">
+					<label>"<span><b>'"$Tgeneral"'</b></span>"</label>
+				</text>
+				<hseparator></hseparator>
+				<text use-markup="true">
+					<label>"<span><b>'"$Tdisk"'</b></span>"</label>
+				</text>
+				<comboboxtext>
+					<variable>generaldisk</variable>
+	'"$(detect_disks)"'
+				</comboboxtext>
+				<hseparator></hseparator>
+				<hbox>
+				<text use-markup="true">
+					<label>"<span><b>'"$Tdir"'</b></span>"</label>
+				</text>
+				<entry fs-action="folder">
+					<input>echo "'$HOME/$Trecovered/'"$(date +%Y%m%d%H%M%S)</input>
+					<variable>generalnowdir</variable>
+				</entry>
+					<button>
+						<input file stock="gtk-open"></input>
+					<action>fileselect:generalnowdir</action>
+					</button>
+				</hbox>
+				<hseparator></hseparator>
+				<checkbox>
+					<label>"'$Tgive'"</label>
+					<variable>CHECKBOX</variable>
+					<default>true</default>
+				</checkbox>
+				<hseparator></hseparator>
+				<text use-markup="true">
+					<label>"<span><b>'"$Troot"'</b></span>"</label>
+				</text>
+				    <button>
+					<label>"'$Tstart'"</label>
+				      <input file icon="edit-find"></input>
+	<action>cp "'$es_maindir/first'" "'$es_maindir/general'"</action>
+	<action>echo "sudo foremost -i "$generaldisk" -o "$generalnowdir"" >> '"$es_maindir/general"'</action>
+	<action>if [ $CHECKBOX = true ] ; then noroot="sudo chmod -R 755 $generalnowdir" ; fi ; echo $noroot >> '"$es_maindir/general"'</action>
+	<action>xterm -bg black -fg green -title Esteaada_Recovery_System '"$es_maindir"/general'</action>
+	<action>refresh:generalnowdir</action>
+	<action>refresh:specificnowdir</action>
+	<action>refresh:textnowdir</action>
+				    </button>
+				</frame>
+			</vbox>
+			<vbox>
+				<frame '$Hspecific'>
+				<text use-markup="true">
+					<label>"<span><b>'"$Tspecific"'</b></span>"</label>
+				</text>
+				<hseparator></hseparator>
+				<text use-markup="true">
+					<label>"<span><b>'"$Tspecs"'</b></span>"</label>
+				</text>
+				<hbox homogeneous="true">
+				<comboboxtext>
+					<variable>spectype</variable>
+	'"$(type_list)"'
+				</comboboxtext>
+					<button>
+						<label>'$Hadd'</label>
+						<action>echo "$specs""$spectype " > '"$es_maindir"'/specs_tmp </action>
+						<action>refresh:specs</action>
+					</button>
+					<button>
+						<label>'$Tclear'</label>
+						<action>echo > '"$es_maindir"'/specs_tmp </action>
+						<action>refresh:specs</action>
+					</button>
+				</hbox>
+				<entry>
+					<input>"cat '"$es_maindir"'/specs_tmp"</input>
+					<sensitive>false</sensitive>
+					<variable>specs</variable>
+				</entry>
+				<hseparator></hseparator>
+				<text use-markup="true">
+					<label>"<span><b>'"$Tdisk"'</b></span>"</label>
+				</text>
+				<comboboxtext>
+					<variable>specificdisk</variable>
+	'"$(detect_disks)"'
+				</comboboxtext>
+				<hseparator></hseparator>
+				<hbox>
+				<text use-markup="true">
+					<label>"<span><b>'"$Tdir"'</b></span>"</label>
+				</text>
+				<entry fs-action="folder">
+					<input>echo "'$HOME/$Trecovered/'"$(date +%Y%m%d%H%M%S)</input>
+					<variable>specificnowdir</variable>
+				</entry>
+					<button>
+						<input file stock="gtk-open"></input>
+					<action>fileselect:specificnowdir</action>
+					</button>
+				</hbox>
+				<hseparator></hseparator>
+				<checkbox>
+					<label>"'$Tgive'"</label>
+					<variable>CHECKBOX</variable>
+					<default>true</default>
+				</checkbox>
+				<hseparator></hseparator>
+				<text use-markup="true">
+					<label>"<span><b>'"$Troot"'</b></span>"</label>
+				</text>
+				    <button>
+					<label>"'$Tstart'"</label>
+				      <input file icon="edit-find"></input>
+	<action>cp "'$es_maindir/first'" "'$es_maindir/specific'"</action>
+	<action>speccommand="$("'$es_maindir/specific_tmp'" $specs)" ; echo "sudo foremost -i "$specificdisk" -o "$specificnowdir" "$speccommand"" >> '"$es_maindir/specific"'</action>
+	<action>if [ $CHECKBOX = true ] ; then noroot="sudo chmod -R 755 $specificnowdir" ; fi ; echo $noroot >> '"$es_maindir/specific"'</action>
+	<action>xterm -bg black -fg green -title Esteaada_Recovery_System '"$es_maindir"/specific'</action>
+	<action>refresh:generalnowdir</action>
+	<action>refresh:specificnowdir</action>
+	<action>refresh:textnowdir</action>
+				    </button>
+				</frame>
+			</vbox>
+			<vbox>
+				<frame '$Htext'>
+				<text use-markup="true">
+					<label>"<span><b>'"$Ttext"'</b></span>"</label>
+				</text>
+				<hseparator></hseparator>
+				<hbox>
+				<text use-markup="true">
+					<label>"<span><b>'"$TTtext"'</b></span>"</label>
+				</text>
+				<entry>
+					<variable>text</variable>
+				</entry>
+				</hbox>
+				<hbox>
+				<text use-markup="true">
+					<label>"<span><b>'"$TEtext"'</b></span>"</label>
+				</text>
+				<entry>
+					<variable>etext</variable>
+				</entry>
+				</hbox>
+				<hseparator></hseparator>
+				<text use-markup="true">
+					<label>"<span><b>'"$Tdisk"'</b></span>"</label>
+				</text>
+				<comboboxtext>
+					<variable>textdisk</variable>
+	'"$(detect_disks)"'
+				</comboboxtext>
+				<hseparator></hseparator>
+				<hbox>
+				<text use-markup="true">
+					<label>"<span><b>'"$Tdir"'</b></span>"</label>
+				</text>
+				<entry fs-action="folder">
+					<input>echo "'$HOME/$Trecovered/'"$(date +%Y%m%d%H%M%S)</input>
+					<variable>textnowdir</variable>
+				</entry>
+					<button>
+						<input file stock="gtk-open"></input>
+					<action>fileselect:textnowdir</action>
+					</button>
+				</hbox>
+				<hseparator></hseparator>
+				<checkbox>
+					<label>"'$Tgive'"</label>
+					<variable>CHECKBOX</variable>
+					<default>true</default>
+				</checkbox>
+				<hseparator></hseparator>
+				<text use-markup="true">
+					<label>"<span><b>'"$Troot"'</b></span>"</label>
+				</text>
+				    <button>
+					<label>"'$Tstart'"</label>
+				      <input file icon="edit-find"></input>
+	<action>cp "'$es_maindir/first'" "'$es_maindir/text'"</action>
+	<action>'"$es_maindir/pretextconf"' "$text $etext"</action>
+	<action>echo "sudo foremost -i "$textdisk" -o "$textnowdir" -c '"$es_maindir/textconf"'" >> '"$es_maindir/text"'</action>
+	<action>if [ $CHECKBOX = true ] ; then noroot="sudo chmod -R 755 $textnowdir" ; fi ; echo $noroot >> '"$es_maindir/text"'</action>
+	<action>if [ ! $text = "" ] ; then if [ ! $etext = "" ] ; then xterm -bg black -fg green -title Esteaada_Recovery_System '"$es_maindir"/specific' ; else "'$errorcommand'" ; fi ; else "'$errorcommand'" ; fi</action>
+	<action>refresh:generalnowdir</action>
+	<action>refresh:specificnowdir</action>
+	<action>refresh:textnowdir</action>
+				    </button>
+				</frame>
+			</vbox>
+			<vbox>
+				<frame '$Hadd'>
+				<hbox>
+				<text use-markup="true">
+					<label>"<span><b>'"$Ttype"'</b></span>"</label>
+				</text>
+				<entry>
+					<variable>newtype</variable>
+				</entry>
+				</hbox>
+				<hbox>
+				<text use-markup="true">
+					<label>"<span><b>'"$Tsize"'</b></span>"</label>
+				</text>
+				<entry>
+					<variable>newsize</variable>
+				</entry>
+				</hbox>
+				<checkbox>
+					<label>"'$Theader'"</label>
+					<variable>headerCH</variable>
+					<default>false</default>
+					<action>if true enable:header</action>
+					<action>if true enable:footer</action>
+					<action>if true disable:verse</action>
+					<action>if true disable:fverse</action>
+					<action>if true disable:newsample</action>
+					<action>if true disable:newbutton</action>
+					<action>if false disable:header</action>
+					<action>if false disable:footer</action>
+					<action>if false enable:verse</action>
+					<action>if false enable:fverse</action>
+					<action>if false enable:newsample</action>
+					<action>if false enable:newbutton</action>
+				</checkbox>
+				<hbox>
+				<text use-markup="true">
+					<label>"<span><b>'"$TTheader"'</b></span>"</label>
+				</text>
+				<entry>
+				<sensitive>false</sensitive>
+					<variable>header</variable>
+				</entry>
+				</hbox>
+				<hbox>
+				<text use-markup="true">
+					<label>"<span><b>'"$TTfooter"'</b></span>"</label>
+				</text>
+				<entry>
+				<sensitive>false</sensitive>
+					<variable>footer</variable>
+				</entry>
+				</hbox>
+				<hbox homogeneous="true">
+				<text use-markup="true">
+					<label>"<span><b>'"$TTheader $Tverse"'</b></span>"</label>
+				</text>
+				<comboboxtext>
+					<variable>verse</variable>
+					<item>2</item><item>4</item><item>8</item>
+				</comboboxtext>
+				</hbox>
+				<hbox homogeneous="true">
+				<text use-markup="true">
+					<label>"<span><b>'"$TTfooter $Tverse"'</b></span>"</label>
+				</text>
+				<comboboxtext>
+					<variable>fverse</variable>
+					<item>0</item><item>2</item><item>4</item>
+				</comboboxtext>
+				</hbox>
+				<hbox>
+				<text use-markup="true">
+					<label>"<span><b>'"$Tsample"'</b></span>"</label>
+				</text>
+				<entry fs-action="file">
+					<variable>newsample</variable>
+				</entry>
+					<button><variable>newbutton</variable>
+						<input file stock="gtk-open"></input>
+					<action>fileselect:newsample</action>
+					</button>
+				</hbox>
+				<hseparator></hseparator>
+					<button><label>'$Hadd'</label>
+						<input file stock="gtk-new"></input>
+	<action>if [ "$newtype" = "" ] ; then newtype=esteaadanone ; fi ; if [ "$newsize" = "" ] ; then newsize=esteaadanone ; fi ; if [ "$header" = "" ] ; then header=esteaadanone ; fi ; if [ "$footer" = "" ] ; then footer=esteaadanone ; fi ; if [ "$verse" = "" ] ; then verse=esteaadanone ; fi ; if [ "$fverse" = "" ] ; then fverse=esteaadanone ; fi ; if [ "$newsample" = "" ] ; then newsample=esteaadanone ; fi ;'"$es_maindir/newtype"' "$headerCH" "$newtype" "$newsize" "$header" "$verse" "$footer" "$fverse" "$newsample"</action>
+					</button>
+				</frame>
+			</vbox>
+			<vbox>
+				<frame '$Hhint'>
+				<text use-markup="true">
+					<label>"<span><b>'"$Tadd"'</b></span>"</label>
+				</text>
+				</frame>
+			</vbox>
+			<vbox>
+				<frame '$Hoptions'>
+					<button><label>'$Tlang_select'</label>
+					<action>esteaada --language</action></button>
+				<text use-markup="true">
+					<label>"<span><b>'"$Tlang_restart"'</b></span>"</label>
+				</text>
+				<hseparator></hseparator>
+					<button><label>'$TEdel'</label>
+					<action>rm "'$es_maindir'/NewTypes"</action></button>
+				</frame>
+			</vbox>
+			<vbox>
+				<frame '$Habout'>
+					<pixmap>
+						<input file>'"$es_icon"'</input>
+					</pixmap>
+					<text use-markup="true">
+						<label>"<span><b>'"$Ttitle"'</b></span>"</label>
+					</text>
+					<text use-markup="true">
+						<label>"<span><b>'"$Tabout"'</b></span>"</label>
+					</text>
+				</frame>
+			</vbox>	
+		</notebook>
+		<hbox>
+			<button>
+				<input file stock="gtk-quit"></input>
+				<label>'"$T_exit"'</label>
+			</button>
+		</hbox>
+	</vbox>
+</window>
+' > "$es_maindir"/main_temp
+"$es_gtkdialog" --file="$es_maindir"/main_temp > /dev/null
+if [ -e "$es_maindir"/main_temp ] ; then rm "$es_maindir"/main_temp ; fi
+if [ -e "$es_maindir"/pretextconf ] ; then rm "$es_maindir"/pretextconf ; fi
+if [ -e "$es_maindir"/textconf ] ; then rm "$es_maindir"/textconf ; fi
+if [ -e "$es_maindir"/cores ] ; then rm "$es_maindir"/cores ; fi
+if [ -e "$es_maindir"/new_core ] ; then rm "$es_maindir"/new_core ; fi
+if [ -e "$es_maindir"/tempspec ] ; then rm "$es_maindir"/tempspec ; fi
+if [ -e "$es_maindir"/specs_tmp ] ; then rm "$es_maindir"/specs_tmp ; fi
+if [ -e "$es_maindir"/specific_tmp ] ; then rm "$es_maindir"/specific_tmp ; fi
+if [ -e "$es_maindir"/specific ] ; then rm "$es_maindir"/specific ; fi
+if [ -e "$es_maindir"/nowtypes ] ; then rm "$es_maindir"/nowtypes ; fi
+if [ -e "$es_maindir"/newtype ] ; then rm "$es_maindir"/newtype ; fi
+if [ -e "$es_maindir"/first ] ; then rm "$es_maindir"/first ; fi
+if [ -e "$es_maindir"/error_temp ] ; then rm "$es_maindir"/error_temp ; fi
+if [ -e "$es_maindir"/done_temp ] ; then rm "$es_maindir"/done_temp ; fi
+if [ -e "$es_maindir"/text ] ; then rm "$es_maindir"/text ; fi
+if [ -e "$es_maindir"/general ] ; then rm "$es_maindir"/general ; fi
+if [ -e "$es_maindir"/last_config ] ; then rm "$es_maindir"/last_config ; fi
+if [ -e "$es_maindir"/foretmps ] ; then rm "$es_maindir"/foretmps ; fi
+#---------------------------------------------------------------
+#----Allah-all-thanked-to-help-me-to-write-this-program---------
+#----and-I-ask-him-to-make-the-benefit-for-you------------------
+#----Allah-can-do-that------------------------------------------
+#---------------------------------------------------------------
+#----With-our-best-wishes---------------------------------------
+#----almasa-project---------------------------------------------
+#---------------------------------------------------------------
