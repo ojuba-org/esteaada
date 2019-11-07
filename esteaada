@@ -1,5 +1,5 @@
-#! /bin/bash
-# Esteaada 2.0
+#!/usr/bin/bash
+# Esteaada 2.1
 # Under WAQFv2 License 
 # By Mosaab Alzoubi (moceap@hotmail.com - facebook.com/moceap)
 # Almasa Project
@@ -10,7 +10,7 @@
 #---Pre-program---
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 es_arg="$@"
-es_ver="2.0"
+es_ver="2.1"
 es_maindir="$HOME/.esteaada"
 es_icon=/usr/share/pixmaps/esteaada.png
 if ( ! [ -e "$es_maindir" ] )
@@ -28,6 +28,9 @@ if ( [ -e /usr/almasa/reqs/gtkdialog ] )
 		es_gtkdialog=gtkdialog
 fi
 echo '#! /bin/bash
+' > "$es_maindir/first"
+chmod +x "$es_maindir/first"
+echo '
 # Esteaada '$es_ver'
 # Under WAQFv2 License 
 # By Mosaab Alzoubi (moceap@hotmail.com - facebook.com/moceap)
@@ -47,8 +50,55 @@ Almasa project (c) WAQFv2 license.
 
 Wait for automatic close >>>>>>
 "
-sleep 3' > "$es_maindir/first"
-chmod +x "$es_maindir/first"
+sleep 3
+pkexec '"$es_maindir/general"'' > "$es_maindir/second1"
+chmod +x "$es_maindir/second1"
+echo '
+# Esteaada '$es_ver'
+# Under WAQFv2 License 
+# By Mosaab Alzoubi (moceap@hotmail.com - facebook.com/moceap)
+# Almasa Project
+# 1438-4-29
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+echo " 
+ = =           ||       = =             ||
+======     ||  || \==/                  ||
+||  ||     ||  ||  ||    ||   || || ||  ||
+======  ====|  ||=====================  ||
+
+Esteaada Recovery System '$es_ver' 
+Almasa project (c) WAQFv2 license.
+
+<<< You need ROOT access to continue >>>
+
+Wait for automatic close >>>>>>
+"
+sleep 3
+pkexec '"$es_maindir/specific"'' > "$es_maindir/second2"
+chmod +x "$es_maindir/second2"
+echo '
+# Esteaada '$es_ver'
+# Under WAQFv2 License 
+# By Mosaab Alzoubi (moceap@hotmail.com - facebook.com/moceap)
+# Almasa Project
+# 1438-4-29
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+echo " 
+ = =           ||       = =             ||
+======     ||  || \==/                  ||
+||  ||     ||  ||  ||    ||   || || ||  ||
+======  ====|  ||=====================  ||
+
+Esteaada Recovery System '$es_ver' 
+Almasa project (c) WAQFv2 license.
+
+<<< You need ROOT access to continue >>>
+
+Wait for automatic close >>>>>>
+"
+sleep 3
+pkexec '"$es_maindir/text"'' > "$es_maindir/second3"
+chmod +x "$es_maindir/second3"
 touch "$es_maindir/textconf"
 echo '#! /bin/bash
 echo "txt y 2000000 $1" > "'$es_maindir'/textconf"' > "$es_maindir/pretextconf"
@@ -380,9 +430,9 @@ echo '<window title="'$Ttitle'" image-name="'$es_icon'" window_position="1">
 					<label>"'$Tstart'"</label>
 				      <input file icon="edit-find"></input>
 	<action>cp "'$es_maindir/first'" "'$es_maindir/general'"</action>
-	<action>echo "sudo foremost -i "$generaldisk" -o "$generalnowdir"" >> '"$es_maindir/general"'</action>
-	<action>if [ $CHECKBOX = true ] ; then noroot="sudo chmod -R 755 $generalnowdir" ; fi ; echo $noroot >> '"$es_maindir/general"'</action>
-	<action>xterm -bg black -fg green -title Esteaada_Recovery_System '"$es_maindir"/general'</action>
+	<action>echo "pkexec foremost -i "$generaldisk" -o "$generalnowdir"" >> '"$es_maindir/general"'</action>
+	<action>if [ $CHECKBOX = true ] ; then noroot="chmod -R 777 $generalnowdir" ; fi ; echo $noroot >> '"$es_maindir/general"'</action>
+	<action>xterm -bg black -fg green -title Esteaada_Recovery_System '"$es_maindir"/second1'</action>
 	<action>refresh:generalnowdir</action>
 	<action>refresh:specificnowdir</action>
 	<action>refresh:textnowdir</action>
@@ -455,9 +505,9 @@ echo '<window title="'$Ttitle'" image-name="'$es_icon'" window_position="1">
 					<label>"'$Tstart'"</label>
 				      <input file icon="edit-find"></input>
 	<action>cp "'$es_maindir/first'" "'$es_maindir/specific'"</action>
-	<action>speccommand="$("'$es_maindir/specific_tmp'" $specs)" ; echo "sudo foremost -i "$specificdisk" -o "$specificnowdir" "$speccommand"" >> '"$es_maindir/specific"'</action>
-	<action>if [ $CHECKBOX = true ] ; then noroot="sudo chmod -R 755 $specificnowdir" ; fi ; echo $noroot >> '"$es_maindir/specific"'</action>
-	<action>xterm -bg black -fg green -title Esteaada_Recovery_System '"$es_maindir"/specific'</action>
+	<action>speccommand="$("'$es_maindir/specific_tmp'" $specs)" ; echo "pkexec foremost -i "$specificdisk" -o "$specificnowdir" "$speccommand"" >> '"$es_maindir/specific"'</action>
+	<action>if [ $CHECKBOX = true ] ; then noroot="chmod -R 777 $specificnowdir" ; fi ; echo $noroot >> '"$es_maindir/specific"'</action>
+	<action>xterm -bg black -fg green -title Esteaada_Recovery_System '"$es_maindir"/second2'</action>
 	<action>refresh:generalnowdir</action>
 	<action>refresh:specificnowdir</action>
 	<action>refresh:textnowdir</action>
@@ -523,9 +573,9 @@ echo '<window title="'$Ttitle'" image-name="'$es_icon'" window_position="1">
 				      <input file icon="edit-find"></input>
 	<action>cp "'$es_maindir/first'" "'$es_maindir/text'"</action>
 	<action>'"$es_maindir/pretextconf"' "$text $etext"</action>
-	<action>echo "sudo foremost -i "$textdisk" -o "$textnowdir" -c '"$es_maindir/textconf"'" >> '"$es_maindir/text"'</action>
-	<action>if [ $CHECKBOX = true ] ; then noroot="sudo chmod -R 755 $textnowdir" ; fi ; echo $noroot >> '"$es_maindir/text"'</action>
-	<action>if [ ! $text = "" ] ; then if [ ! $etext = "" ] ; then xterm -bg black -fg green -title Esteaada_Recovery_System '"$es_maindir"/specific' ; else "'$errorcommand'" ; fi ; else "'$errorcommand'" ; fi</action>
+	<action>echo "pkexec foremost -i "$textdisk" -o "$textnowdir" -c '"$es_maindir/textconf"'" >> '"$es_maindir/text"'</action>
+	<action>if [ $CHECKBOX = true ] ; then noroot="chmod -R 777 $textnowdir" ; fi ; echo $noroot >> '"$es_maindir/text"'</action>
+	<action>if [ ! $text = "" ] ; then if [ ! $etext = "" ] ; then xterm -bg black -fg green -title Esteaada_Recovery_System '"$es_maindir"/second3' ; else "'$errorcommand'" ; fi ; else "'$errorcommand'" ; fi</action>
 	<action>refresh:generalnowdir</action>
 	<action>refresh:specificnowdir</action>
 	<action>refresh:textnowdir</action>
@@ -677,6 +727,9 @@ if [ -e "$es_maindir"/specific ] ; then rm "$es_maindir"/specific ; fi
 if [ -e "$es_maindir"/nowtypes ] ; then rm "$es_maindir"/nowtypes ; fi
 if [ -e "$es_maindir"/newtype ] ; then rm "$es_maindir"/newtype ; fi
 if [ -e "$es_maindir"/first ] ; then rm "$es_maindir"/first ; fi
+if [ -e "$es_maindir"/second1 ] ; then rm "$es_maindir"/second1 ; fi
+if [ -e "$es_maindir"/second2 ] ; then rm "$es_maindir"/second2 ; fi
+if [ -e "$es_maindir"/second3 ] ; then rm "$es_maindir"/second3 ; fi
 if [ -e "$es_maindir"/error_temp ] ; then rm "$es_maindir"/error_temp ; fi
 if [ -e "$es_maindir"/done_temp ] ; then rm "$es_maindir"/done_temp ; fi
 if [ -e "$es_maindir"/text ] ; then rm "$es_maindir"/text ; fi
