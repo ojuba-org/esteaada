@@ -1,5 +1,5 @@
 Name: esteaada
-Version: 2.0
+Version: 2.1
 Release: 1%{?dist}
 Summary: Powerful file recovery
 Summary(ar): مستعيد قوي للملفات
@@ -8,6 +8,7 @@ URL: https://linuxac.org
 Source0: %{name}-%{version}.tar.xz
 Provides: ffe fhe
 Requires: gtkdialog
+Requires: polkit
 Requires: udisks
 Requires: foremost
 Requires: util-linux
@@ -53,6 +54,10 @@ install -Dp -m 0644 %{name}.png %{buildroot}%{_datadir}/pixmaps
 %{_datadir}/pixmaps/%{name}.png
 
 %changelog
+* Thu Nov 7 2019 Mosaab Alzoubi <moceap@hotmail.com> - 2.1-1
+- Update to 2.1
+- Many Fixes
+
 * Sat Jan 28 2017 Mosaab Alzoubi <moceap@hotmail.com> - 1.1-1
 - Initial on Ojuba
 
